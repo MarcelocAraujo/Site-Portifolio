@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system — "Registro" (ficha/caderno de registro acadêmico).
+ * Paleta em papel, tipografia mono como voz de destaque, sem glass/blur.
+ * Tema claro por padrão, com variante escura via classe .dark.
+ */
+
+@theme inline {
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-board: var(--board);
+  --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground);
+  --color-ring-offset-background: var(--background);
+  --font-display: var(--font-plex-mono), monospace;
+  --font-body: var(--font-plex-sans), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --ease-registro: cubic-bezier(0.22, 0.7, 0.24, 1);
+}
+
+:root {
+  --radius: 0.4rem;
+  /* Registro — tema claro, papel */
+  --background: oklch(0.91 0.021 90);
+  --foreground: oklch(0.235 0.014 100);
+  --card: oklch(0.955 0.014 88);
+  --card-foreground: oklch(0.235 0.014 100);
+  --popover: oklch(0.955 0.014 88);
+  --popover-foreground: oklch(0.235 0.014 100);
+  --primary: oklch(0.56 0.13 62);
+  --primary-foreground: oklch(0.98 0.01 90);
+  --secondary: oklch(0.87 0.022 88);
+  --secondary-foreground: oklch(0.235 0.014 100);
+  --muted: oklch(0.87 0.022 88);
+  --muted-foreground: oklch(0.47 0.024 95);
+  --accent: oklch(0.87 0.022 88);
+  --accent-foreground: oklch(0.235 0.014 100);
+  --board: oklch(0.955 0.014 88);
+  --teal: oklch(0.42 0.06 175);
+  --teal-foreground: oklch(0.98 0.01 90);
+  --destructive: oklch(0.44 0.12 30);
+  --destructive-foreground: oklch(0.98 0.01 90);
+  --border: oklch(0.235 0.014 100 / 16%);
+  --input: oklch(0.235 0.014 100 / 22%);
+  --ring: oklch(0.56 0.13 62);
+}
+
+.dark {
+  /* Registro — tema escuro, tinta */
+  --background: oklch(0.22 0.014 100);
+  --foreground: oklch(0.92 0.02 90);
+  --card: oklch(0.27 0.017 100);
+  --card-foreground: oklch(0.92 0.02 90);
+  --popover: oklch(0.27 0.017 100);
+  --popover-foreground: oklch(0.92 0.02 90);
+  --primary: oklch(0.74 0.14 62);
+  --primary-foreground: oklch(0.18 0.02 90);
+  --secondary: oklch(0.33 0.018 100);
+  --secondary-foreground: oklch(0.92 0.02 90);
+  --muted: oklch(0.33 0.018 100);
+  --muted-foreground: oklch(0.68 0.02 90);
+  --accent: oklch(0.33 0.018 100);
+  --accent-foreground: oklch(0.92 0.02 90);
+  --board: oklch(0.27 0.017 100);
+  --teal: oklch(0.68 0.09 175);
+  --teal-foreground: oklch(0.16 0.02 100);
+  --destructive: oklch(0.64 0.15 30);
+  --destructive-foreground: oklch(0.16 0.02 100);
+  --border: oklch(0.92 0.02 90 / 14%);
+  --input: oklch(0.92 0.02 90 / 18%);
+  --ring: oklch(0.74 0.14 62);
+}
+
+@keyframes clip-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility reveal-clip {
+  animation: clip-reveal 0.7s var(--ease-registro) both;
+}
+
+@utility fade-in {
+  animation: fade-in 0.5s ease-out both;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    background-color: var(--color-background);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    background-image: linear-gradient(var(--color-border) 1px, transparent 1px);
+    background-size: 100% 32px;
+    background-position: 0 -1px;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  ::selection {
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+}
