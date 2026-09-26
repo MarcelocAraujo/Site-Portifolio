@@ -3,7 +3,7 @@
 Portfólio acadêmico em **Next.js (App Router)** + **React** + **Tailwind CSS v4**,
 com tema claro/escuro alternável e um Jogo da Forca interativo.
 
-Projeto entregue para a disciplina **[1°GQ] Currículo / Portfólio** (UNICAP).
+Projeto entregue para a disciplina **PROGRAMAÇÃO WEB E MOBILE** (UNICAP).
 
 ## Stack
 
