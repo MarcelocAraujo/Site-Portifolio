@@ -5,7 +5,7 @@ export function Footer() {
         <p className="font-mono">Ficha nº 2026 — Marcelo Caldas, Recife/PE</p>
         <div className="flex gap-4">
           <a
-            href="https://github.com/Marcelo07092005"
+            href="https://github.com/MarcelocAraujo"
             target="_blank"
             rel="noreferrer"
             className="transition-colors hover:text-primary"

@@ -6,6 +6,8 @@ export const metadata: Metadata = {
     "Currículo de Marcelo Caldas de Araújo Filho, estudante de Ciência da Computação em Recife.",
 };
 
+const CURRICULO_URL = "/curriculo-marcelo-caldas.pdf";
+
 export default function Curriculo() {
   return (
     <section>
@@ -33,7 +35,7 @@ export default function Curriculo() {
           </p>
         </div>
         <a
-          href="https://canva.link/f94anl7317cnrsz"
+          href={CURRICULO_URL}
           target="_blank"
           rel="noreferrer"
           className="inline-flex shrink-0 items-center justify-center bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
