@@ -77,6 +77,8 @@ function AppNavigation() {
             <TabTrigger name="forca" href="/forca" asChild>
               <NavItem label="Forca" />
             </TabTrigger>
+            {/* Tela Sobre (tecnologias do app): fora da barra, aberta pelo link do rodapé */}
+            <TabTrigger name="sobre" href="/sobre" style={{ display: 'none' }} />
           </NavHeader>
         </TabList>
         <TabSlot style={{ flex: 1 }} />

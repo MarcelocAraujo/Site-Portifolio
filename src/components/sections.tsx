@@ -126,18 +126,12 @@ function AvatarVirar({ tamanho }: { tamanho: number }) {
       accessibilityLabel="Virar cartão entre a foto e uma saudação"
       style={{ width: tamanho, height: tamanho }}>
       <Animated.View
-        style={[face, { backgroundColor: '#f4f4f4', transform: [{ perspective: 1200 }, { rotateY: frente }] }]}>
+        style={[face, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, transform: [{ perspective: 1200 }, { rotateY: frente }] }]}>
         <Image
           source={require('@/assets/images/perfil.jpg')}
-          contentFit="fill"
-          // Foto 768x1024 ampliada para enquadrar rosto e tronco no círculo
-          style={{
-            position: 'absolute',
-            width: tamanho * 1.67,
-            height: tamanho * 1.67 * (1024 / 768),
-            left: -tamanho * 0.37,
-            top: -tamanho * 0.13,
-          }}
+          contentFit="contain"
+          contentPosition="center"
+          style={{ width: '100%', height: '100%' }}
           accessibilityLabel={PERFIL.nomeCurto}
         />
       </Animated.View>
@@ -546,14 +540,14 @@ const stackStyles = (c: Palette) =>
 
 const DEPENDENCIAS: Record<string, string> = { ...pkg.dependencies, ...pkg.devDependencies };
 
-export function SobreAppSection() {
+export function SobreAppSection({ borda = true }: { borda?: boolean }) {
   const { colors } = useAppTheme();
   const { width } = useWindowDimensions();
   const colunas = width >= 1000 ? 3 : width >= 640 ? 2 : 1;
   const base = colunas === 3 ? '31%' : colunas === 2 ? '47%' : '100%';
 
   return (
-    <Section>
+    <Section borda={borda}>
       <Reveal style={{ alignItems: 'center', gap: 16 }}>
         <Titulo>Sobre este app</Titulo>
         <Text

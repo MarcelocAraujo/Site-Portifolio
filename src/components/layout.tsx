@@ -3,7 +3,7 @@
  * ao rolar"), seção padrão, botões de redes sociais e rodapé.
  */
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, usePathname } from 'expo-router';
+import { router, useFocusEffect, usePathname } from 'expo-router';
 import type { TabListProps, TabTriggerSlotProps } from 'expo-router/ui';
 import {
   createContext,
@@ -353,7 +353,16 @@ export function Footer() {
     <View style={[s.wrapper, { paddingHorizontal: pad }]}>
       <View style={s.inner}>
         <Brand />
-        <Text style={s.made}>Feito com React Native, Expo & TypeScript</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
+          <Text style={s.made}>Feito com React Native, Expo & TypeScript ·</Text>
+          <Pressable onPress={() => router.navigate('/sobre')} accessibilityRole="link">
+            {({ hovered }: { hovered?: boolean }) => (
+              <Text style={[s.made, { color: hovered ? colors.accent : colors.textMuted, textDecorationLine: 'underline' }]}>
+                Sobre este app
+              </Text>
+            )}
+          </Pressable>
+        </View>
         <Pressable
           onPress={voltarAoTopo}
           accessibilityRole="button"
