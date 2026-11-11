@@ -1,35 +1,61 @@
 /**
- * Estrutura das telas: barra de navegação, rolagem com largura máxima,
- * botões de redes sociais e rodapé.
+ * Estrutura das telas: barra de navegação, tela com rolagem (com o "aparecer
+ * ao rolar"), seção padrão, botões de redes sociais e rodapé.
  */
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, usePathname } from 'expo-router';
 import type { TabListProps, TabTriggerSlotProps } from 'expo-router/ui';
-import { type ComponentProps, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+  type ComponentRef,
+  type ReactNode,
+} from 'react';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button } from '@/components/ui';
+import { createRevealRegistry, RevealContext } from '@/components/reveal';
+import { Icon } from '@/components/ui';
 import { LINKS } from '@/data/perfil';
 import { abrirLink } from '@/lib/open-link';
 import { useAppTheme, useThemedStyles } from '@/theme/theme-context';
-import { fonts, MAX_WIDTH, radius, space, type Palette } from '@/theme/tokens';
+import { fonts, MAX_WIDTH, radius, type Palette } from '@/theme/tokens';
+
+/** Ponto em que o layout troca para a versão de celular (igual à referência). */
+export const BREAKPOINT = 860;
+
+export function usePaddingLateral() {
+  const { width } = useWindowDimensions();
+  return width > BREAKPOINT ? 41 : 20;
+}
 
 /* ------------------------------------------------------------------ */
-/* Marca "marcelo.caldas.dev"                                          */
+/* Marca                                                               */
 /* ------------------------------------------------------------------ */
 
 export function Brand() {
   const { colors } = useAppTheme();
   return (
-    <Text style={{ fontFamily: fonts.monoMedium, fontSize: 14, color: colors.text }}>
-      marcelo.<Text style={{ color: colors.accent }}>caldas</Text>
-      <Text style={{ color: colors.textDim }}>.dev</Text>
+    <Text numberOfLines={1} style={{ fontFamily: fonts.monoMedium, fontSize: 14, color: colors.accent }}>
+      marcelo.caldas<Text style={{ color: colors.textMuted }}>.dev</Text>
     </Text>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Botão de tema claro/escuro                                          */
+/* Botão de tema (no lugar do botão "EN" da referência)                */
 /* ------------------------------------------------------------------ */
 
 export function ThemeToggle() {
@@ -41,17 +67,16 @@ export function ThemeToggle() {
       accessibilityRole="button"
       accessibilityLabel={escuro ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
       style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => ({
-        width: 36,
-        height: 36,
+        width: 42,
+        height: 34,
         borderRadius: radius.md,
-        borderWidth: 1,
-        borderColor: hovered ? colors.accentBorder : colors.border,
-        backgroundColor: colors.surface,
+        borderWidth: 1.5,
+        borderColor: hovered ? colors.accent : colors.text,
         alignItems: 'center',
         justifyContent: 'center',
-        transform: [{ scale: pressed ? 0.94 : 1 }],
+        opacity: pressed ? 0.7 : 1,
       })}>
-      <Ionicons name={escuro ? 'sunny-outline' : 'moon-outline'} size={16} color={colors.text} />
+      <Ionicons name={escuro ? 'sunny-outline' : 'moon-outline'} size={15} color={colors.text} />
     </Pressable>
   );
 }
@@ -61,33 +86,48 @@ export function ThemeToggle() {
 /* ------------------------------------------------------------------ */
 
 /**
- * Recebe os <TabTrigger> como filhos. Em telas largas os links ficam
- * centralizados na mesma linha da marca; no celular viram uma faixa
- * de "pílulas" com rolagem horizontal logo abaixo.
+ * Desktop: marca à esquerda, links centralizados, botão à direita.
+ * Celular: botão de menu que abre a lista de links.
  */
 export function NavHeader({ children, style, ...rest }: TabListProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const { colors } = useAppTheme();
   const s = useThemedStyles(navStyles);
-  const largo = width >= 900;
+  const pathname = usePathname();
+  // O menu fica aberto só na tela em que foi aberto (fecha sozinho ao navegar).
+  const [abertoEm, setAbertoEm] = useState<string | null>(null);
+  const aberto = abertoEm === pathname;
+  const largo = width > BREAKPOINT;
+  const pad = largo ? 41 : 20;
 
   return (
     <View {...rest} style={[s.wrapper, { paddingTop: insets.top }, style]}>
-      <View style={s.inner}>
-        <View style={s.topRow}>
+      <View style={[s.barra, { paddingHorizontal: pad }]}>
+        <View style={s.lado}>
           <Brand />
-          {largo ? <View style={s.linksInline}>{children}</View> : null}
-          <ThemeToggle />
         </View>
-        {!largo ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={s.linksScroll}>
-            {children}
-          </ScrollView>
-        ) : null}
+        {largo ? <View style={s.linksCentro}>{children}</View> : null}
+        <View style={[s.lado, { alignItems: 'flex-end' }]}>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <ThemeToggle />
+            {!largo ? (
+              <Pressable
+                onPress={() => setAbertoEm(aberto ? null : pathname)}
+                accessibilityRole="button"
+                accessibilityLabel={aberto ? 'Fechar menu' : 'Abrir menu'}
+                style={s.menuBotao}>
+                <Ionicons name={aberto ? 'close' : 'menu'} size={20} color={colors.text} />
+              </Pressable>
+            ) : null}
+          </View>
+        </View>
       </View>
+      {!largo ? (
+        <View style={[s.menu, { paddingHorizontal: pad, display: aberto ? 'flex' : 'none' }]}>
+          {children}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -95,67 +135,51 @@ export function NavHeader({ children, style, ...rest }: TabListProps) {
 const navStyles = (c: Palette) =>
   StyleSheet.create({
     wrapper: {
-      backgroundColor: c.bg,
+      backgroundColor: c.header,
       borderBottomWidth: 1,
       borderBottomColor: c.border,
+      zIndex: 10,
     },
-    inner: {
-      width: '100%',
-      maxWidth: MAX_WIDTH,
-      alignSelf: 'center',
-    },
-    topRow: {
+    barra: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: space.xl,
-      paddingVertical: space.md,
-      gap: space.lg,
+      paddingVertical: 20,
     },
-    linksInline: {
-      flexDirection: 'row',
+    lado: { flex: 1, minWidth: 160 },
+    linksCentro: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    menuBotao: {
+      width: 42,
+      height: 34,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: c.border,
       alignItems: 'center',
-      gap: space.xs,
+      justifyContent: 'center',
     },
-    linksScroll: {
-      paddingHorizontal: space.lg,
-      paddingBottom: space.md,
-      gap: space.xs,
-    },
+    menu: { paddingBottom: 16, gap: 4 },
   });
 
-// O `ref` injetado pelo TabTrigger continua chegando via ...props em tempo de execução;
-// só tiramos do tipo porque a tipagem dele no expo-router não bate com a do Pressable.
-type NavItemProps = Omit<TabTriggerSlotProps, 'ref'> & {
-  label: string;
-  icon: ComponentProps<typeof MaterialCommunityIcons>['name'];
-};
+type NavItemProps = Omit<TabTriggerSlotProps, 'ref'> & { label: string };
 
 /** Item da navegação. O Expo Router injeta `isFocused` e `onPress`. */
-export function NavItem({ label, icon, isFocused, ...props }: NavItemProps) {
+export function NavItem({ label, isFocused, ...props }: NavItemProps) {
   const { colors } = useAppTheme();
   return (
     <Pressable
       {...props}
       style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => ({
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        paddingHorizontal: space.md,
-        paddingVertical: 7,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
         borderRadius: radius.md,
-        backgroundColor: isFocused ? colors.accentSoft : hovered ? colors.surfaceAlt : 'transparent',
-        opacity: pressed ? 0.75 : 1,
+        backgroundColor: isFocused ? colors.accentSoft : 'transparent',
+        opacity: pressed ? 0.7 : 1,
+        ...(hovered && !isFocused ? { backgroundColor: colors.surfaceAlt } : null),
       })}>
-      <MaterialCommunityIcons
-        name={icon}
-        size={15}
-        color={isFocused ? colors.accent : colors.textMuted}
-      />
       <Text
         style={{
           fontFamily: isFocused ? fonts.medium : fonts.regular,
-          fontSize: 14,
+          fontSize: 16,
+          lineHeight: 24,
           color: isFocused ? colors.accent : colors.text,
         }}>
         {label}
@@ -165,32 +189,77 @@ export function NavItem({ label, icon, isFocused, ...props }: NavItemProps) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Tela com rolagem                                                    */
+/* Tela com rolagem + aparecer ao rolar                                */
 /* ------------------------------------------------------------------ */
+
+const ScrollTopContext = createContext<() => void>(() => {});
 
 export function Screen({ children }: { children: ReactNode }) {
   const insets = useSafeAreaInsets();
   const { colors } = useAppTheme();
+  const [registry] = useState(createRevealRegistry);
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
+
+  // Ao abrir a tela (ou voltar para ela), revela o que já está visível.
+  useFocusEffect(
+    useCallback(() => {
+      const id = setTimeout(registry.notify, 60);
+      return () => clearTimeout(id);
+    }, [registry]),
+  );
+
+  const voltarAoTopo = useCallback(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+  }, []);
+
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom }}
-      keyboardShouldPersistTaps="handled">
-      <View
-        style={{
-          width: '100%',
-          maxWidth: MAX_WIDTH,
-          alignSelf: 'center',
-          paddingHorizontal: space.xl,
-          paddingTop: space.xxl,
-          paddingBottom: space.xxxl,
-          gap: space.xxxl,
-          flexGrow: 1,
-        }}>
-        {children}
-      </View>
-      <Footer />
-    </ScrollView>
+    <RevealContext.Provider value={registry}>
+      <ScrollTopContext.Provider value={voltarAoTopo}>
+        <ScrollView
+          ref={scrollRef}
+          style={{ flex: 1, backgroundColor: colors.bg }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom }}
+          onScroll={registry.notify}
+          onContentSizeChange={registry.notify}
+          scrollEventThrottle={32}
+          keyboardShouldPersistTaps="handled">
+          <View style={{ flexGrow: 1 }}>{children}</View>
+          <Footer />
+        </ScrollView>
+      </ScrollTopContext.Provider>
+    </RevealContext.Provider>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Seção padrão (padding e largura iguais aos da referência)           */
+/* ------------------------------------------------------------------ */
+
+export function Section({
+  children,
+  borda = true,
+  style,
+}: {
+  children: ReactNode;
+  borda?: boolean;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const { colors } = useAppTheme();
+  const { width } = useWindowDimensions();
+  const pad = usePaddingLateral();
+  return (
+    <View
+      style={[
+        {
+          paddingHorizontal: pad,
+          paddingVertical: width > BREAKPOINT ? 92 : 64,
+          borderTopWidth: borda ? 1 : 0,
+          borderTopColor: colors.border,
+        },
+        style,
+      ]}>
+      <View style={{ width: '100%', maxWidth: MAX_WIDTH, alignSelf: 'center' }}>{children}</View>
+    </View>
   );
 }
 
@@ -198,20 +267,66 @@ export function Screen({ children }: { children: ReactNode }) {
 /* GitHub · LinkedIn · Currículo                                       */
 /* ------------------------------------------------------------------ */
 
+function SocialButton({
+  label,
+  icon,
+  onPress,
+}: {
+  label: string;
+  icon: Parameters<typeof Icon>[0]['icon'];
+  onPress: () => void;
+}) {
+  const { colors } = useAppTheme();
+  return (
+    <Pressable
+      accessibilityRole="link"
+      onPress={onPress}
+      style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => ({
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
+        minWidth: 106,
+        paddingVertical: 15,
+        paddingHorizontal: 18,
+        borderRadius: radius.md,
+        borderWidth: 1,
+        borderColor: hovered ? colors.accentBorder : colors.border,
+        backgroundColor: hovered ? colors.accentSoft : 'transparent',
+        opacity: pressed ? 0.8 : 1,
+      })}>
+      {({ hovered }: { hovered?: boolean }) => (
+        <>
+          <Icon icon={icon} size={16} color={hovered ? colors.accent : colors.text} />
+          <Text
+            style={{
+              fontFamily: fonts.regular,
+              fontSize: 14,
+              lineHeight: 21,
+              color: hovered ? colors.accent : colors.text,
+            }}>
+            {label}
+          </Text>
+        </>
+      )}
+    </Pressable>
+  );
+}
+
 export function SocialLinks() {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md }}>
-      <Button
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+      <SocialButton
         label="GitHub"
         icon={{ lib: 'ion', name: 'logo-github' }}
         onPress={() => abrirLink(LINKS.github)}
       />
-      <Button
+      <SocialButton
         label="LinkedIn"
         icon={{ lib: 'ion', name: 'logo-linkedin' }}
         onPress={() => abrirLink(LINKS.linkedin)}
       />
-      <Button
+      <SocialButton
         label="Currículo"
         icon={{ lib: 'ion', name: 'document-text-outline' }}
         onPress={() => abrirLink(LINKS.curriculo)}
@@ -226,12 +341,24 @@ export function SocialLinks() {
 
 export function Footer() {
   const s = useThemedStyles(footerStyles);
+  const { colors } = useAppTheme();
+  const pad = usePaddingLateral();
+  const voltarAoTopo = useContext(ScrollTopContext);
   return (
-    <View style={s.wrapper}>
+    <View style={[s.wrapper, { paddingHorizontal: pad }]}>
       <View style={s.inner}>
         <Brand />
         <Text style={s.made}>Feito com React Native, Expo & TypeScript</Text>
-        <Text style={s.made}>Recife/PE · 2026</Text>
+        <Pressable
+          onPress={voltarAoTopo}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar ao topo"
+          style={({ hovered }: { hovered?: boolean }) => [
+            s.topo,
+            hovered && { borderColor: colors.accent },
+          ]}>
+          <Ionicons name="arrow-up" size={14} color={colors.text} />
+        </Pressable>
       </View>
     </View>
   );
@@ -244,13 +371,21 @@ const footerStyles = (c: Palette) =>
       width: '100%',
       maxWidth: MAX_WIDTH,
       alignSelf: 'center',
-      paddingHorizontal: space.xl,
-      paddingVertical: space.xl,
+      paddingVertical: 22,
       flexDirection: 'row',
       flexWrap: 'wrap',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: space.md,
+      gap: 12,
     },
     made: { fontFamily: fonts.mono, fontSize: 11, color: c.textDim },
+    topo: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   });

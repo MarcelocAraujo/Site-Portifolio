@@ -58,8 +58,8 @@ export function BlinkingCursor({ style }: { style?: StyleProp<TextStyle> }) {
     const loop = Animated.loop(
       Animated.sequence([
         // duração 0 com atraso = pisca "seco", como um cursor de terminal
-        Animated.timing(opacity, { toValue: 0, duration: 0, delay: 530, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 1, duration: 0, delay: 530, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0, duration: 0, delay: 500, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 1, duration: 0, delay: 500, useNativeDriver: true }),
       ]),
     );
     loop.start();
@@ -157,14 +157,14 @@ export function Chip({ children, tone = 'accent' }: { children: ReactNode; tone?
       style={{
         borderWidth: 1,
         borderColor: accent ? colors.accentBorder : colors.border,
-        backgroundColor: accent ? colors.accentSoft : colors.surfaceAlt,
+        backgroundColor: accent ? "transparent" : colors.surfaceAlt,
         borderRadius: radius.pill,
-        paddingHorizontal: space.md,
-        paddingVertical: 4,
+        paddingHorizontal: 14,
+        paddingVertical: 5,
       }}>
       <Text
         style={{
-          fontFamily: fonts.medium,
+          fontFamily: fonts.regular,
           fontSize: 12,
           lineHeight: 18,
           color: accent ? colors.accent : colors.textMuted,

@@ -24,21 +24,23 @@ export type Palette = {
   codeKey: string;
   codeString: string;
   codeNumber: string;
+  glow: string;
+  header: string;
 };
 
 export const palettes: Record<'dark' | 'light', Palette> = {
   dark: {
     bg: '#0a0a0a',
-    surface: '#111113',
-    surfaceAlt: '#18181b',
-    border: '#232326',
-    borderStrong: '#2f2f33',
+    surface: '#111111',
+    surfaceAlt: '#161616',
+    border: 'rgba(255, 255, 255, 0.12)',
+    borderStrong: 'rgba(255, 255, 255, 0.2)',
     text: '#f4f4f4',
-    textMuted: '#a1a1aa',
-    textDim: '#71717a',
+    textMuted: '#8a8a8a',
+    textDim: '#5a5a5a',
     accent: '#8b8cf5',
     accentSoft: 'rgba(139, 140, 245, 0.12)',
-    accentBorder: 'rgba(139, 140, 245, 0.35)',
+    accentBorder: 'rgba(139, 140, 245, 0.28)',
     onAccent: '#0a0a0a',
     success: '#4ade80',
     successSoft: 'rgba(74, 222, 128, 0.12)',
@@ -47,6 +49,8 @@ export const palettes: Record<'dark' | 'light', Palette> = {
     codeKey: '#8b8cf5',
     codeString: '#86efac',
     codeNumber: '#fbbf24',
+    glow: '#6d6ce0',
+    header: 'rgba(10, 10, 12, 0.7)',
   },
   light: {
     bg: '#fafafa',
@@ -68,6 +72,8 @@ export const palettes: Record<'dark' | 'light', Palette> = {
     codeKey: '#5b5bd6',
     codeString: '#15803d',
     codeNumber: '#b45309',
+    glow: '#8b8cf5',
+    header: 'rgba(250, 250, 250, 0.8)',
   },
 };
 
@@ -100,4 +106,4 @@ export const radius = {
 } as const;
 
 /** Largura máxima do conteúdo (fica centralizado em telas largas / web). */
-export const MAX_WIDTH = 1040;
+export const MAX_WIDTH = 1300;

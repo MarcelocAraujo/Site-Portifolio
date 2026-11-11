@@ -60,22 +60,22 @@ function AppNavigation() {
         <TabList asChild>
           <NavHeader>
             <TabTrigger name="index" href="/" asChild>
-              <NavItem label="Início" icon="home-outline" />
+              <NavItem label="Início" />
             </TabTrigger>
             <TabTrigger name="projetos" href="/projetos" asChild>
-              <NavItem label="Projetos" icon="folder-outline" />
+              <NavItem label="Projetos" />
             </TabTrigger>
             <TabTrigger name="formacao" href="/formacao" asChild>
-              <NavItem label="Formação" icon="school-outline" />
+              <NavItem label="Formação" />
             </TabTrigger>
             <TabTrigger name="experiencia" href="/experiencia" asChild>
-              <NavItem label="Experiência" icon="briefcase-outline" />
+              <NavItem label="Experiência" />
             </TabTrigger>
             <TabTrigger name="stacks" href="/stacks" asChild>
-              <NavItem label="Stacks" icon="layers-outline" />
+              <NavItem label="Stacks" />
             </TabTrigger>
             <TabTrigger name="forca" href="/forca" asChild>
-              <NavItem label="Forca" icon="gamepad-variant-outline" />
+              <NavItem label="Forca" />
             </TabTrigger>
           </NavHeader>
         </TabList>

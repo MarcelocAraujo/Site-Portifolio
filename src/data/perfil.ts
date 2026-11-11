@@ -6,6 +6,8 @@ export const PERFIL = {
   nome: 'Marcelo Caldas de Araújo Filho',
   nomeCurto: 'Marcelo Caldas',
   titulo: 'Estudante de Ciência da Computação — UNICAP',
+  /** Título grande do topo (digitado letra a letra). */
+  cargo: 'Estudante de Ciência da Computação',
   descricao:
     'Estudante de Ciência da Computação, com interesse na área de desenvolvimento e IA. Este app reúne minha formação, os projetos que venho construindo e um Jogo da Forca que fiz do zero.',
   frasesDigitadas: [
