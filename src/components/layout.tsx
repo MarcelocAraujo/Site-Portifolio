@@ -102,7 +102,7 @@ export function NavHeader({ children, style, ...rest }: TabListProps) {
   const pad = largo ? 41 : 20;
 
   return (
-    <View {...rest} style={[s.wrapper, { paddingTop: insets.top }, style]}>
+    <View {...rest} style={[style, s.wrapper, { paddingTop: insets.top }]}>
       <View style={[s.barra, { paddingHorizontal: pad }]}>
         <View style={s.lado}>
           <Brand />
@@ -135,6 +135,11 @@ export function NavHeader({ children, style, ...rest }: TabListProps) {
 const navStyles = (c: Palette) =>
   StyleSheet.create({
     wrapper: {
+      // O TabList do Expo Router aplica flexDirection: 'row'; aqui forçamos coluna.
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      width: '100%',
+      alignSelf: 'stretch',
       backgroundColor: c.header,
       borderBottomWidth: 1,
       borderBottomColor: c.border,

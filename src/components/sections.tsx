@@ -127,10 +127,19 @@ function AvatarVirar({ tamanho }: { tamanho: number }) {
       style={{ width: tamanho, height: tamanho }}>
       <Animated.View
         style={[face, { backgroundColor: '#f4f4f4', transform: [{ perspective: 1200 }, { rotateY: frente }] }]}>
-        {/* Troque por <Image source={require('@/assets/images/perfil.png')} /> quando tiver a foto */}
-        <Text style={{ fontFamily: fonts.semibold, fontSize: tamanho * 0.3, color: '#0a0a0a', letterSpacing: -2 }}>
-          MC
-        </Text>
+        <Image
+          source={require('@/assets/images/perfil.jpg')}
+          contentFit="fill"
+          // Foto 768x1024 ampliada para enquadrar rosto e tronco no círculo
+          style={{
+            position: 'absolute',
+            width: tamanho * 1.67,
+            height: tamanho * 1.67 * (1024 / 768),
+            left: -tamanho * 0.37,
+            top: -tamanho * 0.13,
+          }}
+          accessibilityLabel={PERFIL.nomeCurto}
+        />
       </Animated.View>
       <Animated.View
         style={[
@@ -308,83 +317,6 @@ export function ProjetosSection({ borda = true }: { borda?: boolean }) {
 /* FORMAÇÃO / EXPERIÊNCIA (layout da seção "Sobre" da referência)      */
 /* ------------------------------------------------------------------ */
 
-function CartaoCodigo() {
-  const { colors } = useAppTheme();
-  const s = useThemedStyles(codigoStyles);
-  const { ficha } = PERFIL;
-
-  const linha = (chave: string, valor: string | number) => (
-    <Text style={s.code}>
-      {'  '}
-      <Text style={{ color: colors.codeKey }}>{chave}</Text>
-      <Text style={{ color: colors.textMuted }}>: </Text>
-      {typeof valor === 'number' ? (
-        <Text style={{ color: colors.codeNumber }}>{valor}</Text>
-      ) : (
-        <Text style={{ color: colors.codeString }}>&apos;{valor}&apos;</Text>
-      )}
-      <Text style={{ color: colors.textMuted }}>,</Text>
-    </Text>
-  );
-
-  return (
-    <View style={s.card}>
-      <View style={s.header}>
-        <View style={{ flexDirection: 'row', gap: 6 }}>
-          <View style={[s.dot, { backgroundColor: '#f87171' }]} />
-          <View style={[s.dot, { backgroundColor: '#fbbf24' }]} />
-          <View style={[s.dot, { backgroundColor: '#4ade80' }]} />
-        </View>
-        <Text style={s.arquivo}>marcelo-portfolio.ts</Text>
-      </View>
-      <View style={s.corpo}>
-        <Text style={s.code}>
-          <Text style={{ color: colors.accent }}>const</Text> marcelo{' '}
-          <Text style={{ color: colors.textMuted }}>= {'{'}</Text>
-        </Text>
-        {linha('local', ficha.local)}
-        {linha('curso', 'Ciência da Computação')}
-        {linha('periodo', ficha.periodo)}
-        {linha('projetos', ficha.projetos)}
-        {linha('status', ficha.status)}
-        <Text style={[s.code, { color: colors.textMuted }]}>{'};'}</Text>
-        <Text style={[s.code, { marginTop: 18 }]}>
-          marcelo.<Text style={{ color: colors.accent }}>aprender</Text>(
-          <BlinkingCursor />
-        </Text>
-      </View>
-    </View>
-  );
-}
-
-const codigoStyles = (c: Palette) =>
-  StyleSheet.create({
-    card: {
-      width: '100%',
-      maxWidth: 380,
-      aspectRatio: 3 / 4,
-      alignSelf: 'center',
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.accentBorder,
-      borderRadius: 16,
-      overflow: 'hidden',
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-      paddingHorizontal: 18,
-      paddingVertical: 14,
-      borderBottomWidth: 1,
-      borderBottomColor: c.border,
-    },
-    dot: { width: 10, height: 10, borderRadius: 5 },
-    arquivo: { fontFamily: fonts.mono, fontSize: 12, color: c.textMuted },
-    corpo: { padding: 22, gap: 2, flex: 1, justifyContent: 'center' },
-    code: { fontFamily: fonts.mono, fontSize: 13.5, lineHeight: 24, color: c.text },
-  });
-
 type Aba = 'formacao' | 'experiencia';
 
 function ItemLinhaTempo({ periodo, titulo, local, descricao, ultimo }: {
@@ -478,13 +410,9 @@ export function FormacaoSection({ abaInicial = 'formacao', borda = true }: { aba
 
   return (
     <Section borda={borda}>
-      <View style={{ flexDirection: largo ? 'row' : 'column', gap: largo ? 64 : 40, alignItems: 'flex-start' }}>
-        <Reveal style={{ width: largo ? 380 : '100%' }}>
-          <CartaoCodigo />
-        </Reveal>
-
-        <Reveal delay={150} style={{ flex: largo ? 1 : undefined, width: largo ? undefined : '100%', gap: 28 }}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 28, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 14 }}>
+      <View style={{ alignItems: 'center' }}>
+        <Reveal style={{ width: '100%', maxWidth: 860, gap: 28 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 28, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 14 }}>
             {botaoAba('formacao', 'Formação')}
             {botaoAba('experiencia', 'Experiência')}
           </View>
