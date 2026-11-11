@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npx expo export --platform web",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/curriculo", "destination": "/curriculo-marcelo-caldas.pdf", "permanent": false }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}

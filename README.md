@@ -1,68 +1,62 @@
-# Portfólio — Marcelo Caldas
+# Portfólio — Marcelo Caldas (React Native + Expo)
 
-Portfólio acadêmico em **Next.js (App Router)** + **React** + **Tailwind CSS v4**, com tema claro/escuro alternável e um Jogo da Forca interativo.
+App de currículo/portfólio feito em **React Native + Expo** com **Expo Router**, para a disciplina **Programação Web e Mobile** (UNICAP). Esta é a versão mobile do portfólio que antes era em Next.js ([marcelocaldas.vercel.app](https://marcelocaldas.vercel.app)).
 
-🔗 **Acesse:** https://marcelocaldas.vercel.app
+## Telas (Expo Router, em `src/app`)
 
-Projeto desenvolvido para a disciplina **Programação Web e Mobile** (UNICAP).
+| Rota | Tela | Conteúdo |
+| --- | --- | --- |
+| `/` | Início | Apresentação, ficha rápida, GitHub, LinkedIn e currículo |
+| `/projetos` | Projetos | Galeria com os projetos acadêmicos |
+| `/formacao` | Formação | Experiência acadêmica: graduação, escola e cursos |
+| `/experiencia` | Experiência | Experiência profissional: objetivo, áreas de interesse e idiomas |
+| `/stacks` | Stacks | Habilidades técnicas e **Sobre este app** (todas as tecnologias e módulos usados) |
+| `/forca` | Forca | Jogo da Forca rodando em React Native (sem WebView) |
 
-## Stack
+## Tecnologias
 
-- Next.js 15 (App Router)
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- next/font (IBM Plex Mono + IBM Plex Sans) e next/image (otimização de imagens)
-
-## Funcionalidades
-
-- **Tema claro/escuro:** botão no canto direito da navegação. A escolha fica salva no `localStorage` e é aplicada antes da primeira renderização, evitando o "flash" de tela clara ao carregar.
-- **Jogo da Forca (`/forca`):** teclado virtual, entrada por texto, lista de letras já tentadas (corretas x erradas), boneco desenhado em SVG conforme os erros aumentam, 30+ palavras sorteadas aleatoriamente e botão de reiniciar.
-- **Galeria de projetos:** cada card ajusta o enquadramento da imagem de forma independente (fotos usam `object-cover`, logos usam `object-contain`).
-- **Páginas:** início, formação acadêmica e cursos, currículo em PDF e projetos.
+- React Native, React 19 e TypeScript
+- Expo SDK 58 e Expo Router (abas "headless" com barra de navegação própria)
+- Fontes Poppins e JetBrains Mono (`@expo-google-fonts`)
+- `@expo/vector-icons`, `react-native-svg` (boneco da forca), `expo-image`
+- `expo-haptics` (vibração no jogo), `expo-web-browser` (links externos)
+- AsyncStorage (salva o tema claro/escuro)
+- EAS Update (publicação over-the-air)
 
 ## Estrutura
 
 ```
 src/
-  app/
-    layout.tsx           # layout raiz: fontes, nav, footer, script anti-flash do tema
-    page.tsx             # página inicial
-    globals.css          # design system (cores, tipografia, tema claro/escuro)
-    formacao/page.tsx    # formação acadêmica e cursos
-    curriculo/page.tsx   # link para o currículo em PDF
-    projetos/page.tsx    # galeria de projetos
-    forca/
-      page.tsx           # metadata (SEO) da página do jogo
-      jogo-forca.tsx     # lógica e interface do Jogo da Forca (client component)
+  app/                 # telas (cada arquivo é uma rota)
+    _layout.tsx        # fontes, tema e navegação
+    index.tsx  projetos.tsx  formacao.tsx  experiencia.tsx  stacks.tsx  forca.tsx
   components/
-    nav-bar.tsx          # menu superior, com link ativo destacado
-    footer.tsx           # rodapé com GitHub, LinkedIn e e-mail
-    theme-toggle.tsx     # botão de alternar claro/escuro
-  lib/
-    utils.ts             # helper cn para combinar classes do Tailwind
-public/
-  images/                # imagens dos projetos e retrato
-  favicon.ico
-  robots.txt
+    ui.tsx             # textos, botões, cards, chips, títulos com cursor "_"
+    layout.tsx         # barra de navegação, tela com rolagem, redes sociais, rodapé
+    forca/boneco.tsx   # boneco da forca em SVG
+  data/perfil.ts       # TODO o conteúdo (textos, projetos, cursos, stacks, palavras)
+  theme/               # cores, fontes, espaçamentos e tema claro/escuro
+  lib/open-link.ts     # abre links externos
 ```
 
-## Rodando localmente
+Para mudar textos, projetos ou cursos, edite só `src/data/perfil.ts`.
+
+## Rodando
 
 ```bash
 npm install
-npm run dev
+npx expo start
 ```
 
-Abra http://localhost:3000.
+Escaneie o QR Code com o app **Expo Go** (Android/iOS) ou aperte `w` para abrir no navegador.
 
-## Build de produção
+## Publicando no Expo (EAS Update)
 
 ```bash
-npm run build
-npm run start
+npx eas-cli@latest login
+npx eas-cli@latest init
+npx eas-cli@latest update:configure
+npx eas-cli@latest update --branch production --message "Portfólio"
 ```
 
-## Deploy
-
-Publicado na [Vercel](https://vercel.com) em https://marcelocaldas.vercel.app. A cada push na branch `main`, o deploy é atualizado automaticamente.
+A página do update no site do Expo mostra o QR Code para abrir o app no Expo Go.

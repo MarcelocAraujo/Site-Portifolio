@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Marcelo Caldas",
+    "slug": "portfolio-marcelo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "portfoliomarcelo",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "icon": "./assets/expo.icon"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0a0a0a",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/favicon.png",
+      "name": "Marcelo Caldas — Portfólio",
+      "backgroundColor": "#0a0a0a",
+      "themeColor": "#0a0a0a"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0a0a0a",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "description": "Portfólio acadêmico de Marcelo Caldas em React Native + Expo",
+    "backgroundColor": "#0a0a0a"
+  }
+}
