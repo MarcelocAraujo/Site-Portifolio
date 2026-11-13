@@ -2,7 +2,7 @@
  * Seções do portfólio, no mesmo modelo visual do site de referência.
  * O Início mostra todas em sequência; cada aba mostra a sua.
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
@@ -11,6 +11,7 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import pkg from '../../package.json';
 import { JogoForca, TOTAL_PALAVRAS, TOTAL_VIDAS } from '@/components/forca/jogo';
 import { BREAKPOINT, Section, SocialLinks, usePaddingLateral } from '@/components/layout';
+import { ProjetoModal } from '@/components/projeto-modal';
 import { Reveal } from '@/components/reveal';
 import { BlinkingCursor, Chip } from '@/components/ui';
 import {
@@ -233,15 +234,19 @@ export function HeroSection() {
 /* PROJETOS                                                            */
 /* ------------------------------------------------------------------ */
 
-function CartaoProjeto({ projeto }: { projeto: Projeto }) {
+function CartaoProjeto({ projeto, onAbrir }: { projeto: Projeto; onAbrir: () => void }) {
   const s = useThemedStyles(projetoStyles);
+  const { colors } = useAppTheme();
   const [hover, setHover] = useState(false);
   const logo = projeto.enquadramento === 'contain';
 
   return (
     <Pressable
+      onPress={onAbrir}
       onHoverIn={() => setHover(true)}
       onHoverOut={() => setHover(false)}
+      accessibilityRole="button"
+      accessibilityLabel={`Ver detalhes do projeto ${projeto.titulo}`}
       style={[s.card, hover && s.cardHover]}>
       <View style={[s.imagemBox, logo && s.imagemLogo]}>
         <Image
@@ -260,6 +265,10 @@ function CartaoProjeto({ projeto }: { projeto: Projeto }) {
           {projeto.stack.map((tech) => (
             <Chip key={tech}>{tech}</Chip>
           ))}
+        </View>
+        <View style={[s.verDetalhes, hover && { borderColor: colors.accentBorder, backgroundColor: colors.accentSoft }]}>
+          <Text style={[s.verDetalhesTexto, hover && { color: colors.accent }]}>Ver detalhes</Text>
+          <Ionicons name="arrow-forward" size={14} color={hover ? colors.accent : colors.text} />
         </View>
       </View>
     </Pressable>
@@ -284,25 +293,56 @@ const projetoStyles = (c: Palette) =>
     titulo: { fontFamily: fonts.semibold, fontSize: 24, lineHeight: 32, color: c.text },
     descricao: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 26, color: c.textMuted },
     chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 },
+    verDetalhes: {
+      marginTop: 'auto',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      paddingVertical: 12,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    verDetalhesTexto: { fontFamily: fonts.medium, fontSize: 14, color: c.text },
   });
+
+const GAP_PROJETOS = 24;
 
 export function ProjetosSection({ borda = true }: { borda?: boolean }) {
   const { width } = useWindowDimensions();
   const colunas = width >= 1000 ? 3 : width >= 640 ? 2 : 1;
-  const base = colunas === 3 ? '31%' : colunas === 2 ? '47%' : '100%';
+  // Largura exata de cada coluna (a última linha não estica os cards)
+  const [larguraGrade, setLarguraGrade] = useState(0);
+  const larguraCard: number | `${number}%` | undefined =
+    colunas === 1
+      ? '100%'
+      : process.env.EXPO_OS === 'web'
+        ? // na web o CSS calcula a coluna exata
+          (`calc((100% - ${GAP_PROJETOS * (colunas - 1)}px) / ${colunas})` as unknown as `${number}%`)
+        : larguraGrade
+          ? (larguraGrade - GAP_PROJETOS * (colunas - 1)) / colunas
+          : undefined;
+  const [aberto, setAberto] = useState<Projeto | null>(null);
 
   return (
     <Section borda={borda}>
       <Reveal>
         <Titulo>Projetos</Titulo>
       </Reveal>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 24, marginTop: 48 }}>
+      <View
+        onLayout={(e) => setLarguraGrade(e.nativeEvent.layout.width)}
+        style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GAP_PROJETOS, marginTop: 48 }}>
         {PROJETOS.map((projeto, i) => (
-          <Reveal key={projeto.titulo} delay={(i % colunas) * 120} style={{ flexBasis: base, flexGrow: 1 }}>
-            <CartaoProjeto projeto={projeto} />
+          <Reveal
+            key={projeto.titulo}
+            delay={(i % colunas) * 120}
+            style={larguraCard ? { width: larguraCard } : { width: '100%' }}>
+            <CartaoProjeto projeto={projeto} onAbrir={() => setAberto(projeto)} />
           </Reveal>
         ))}
       </View>
+      <ProjetoModal projeto={aberto} onFechar={() => setAberto(null)} />
     </Section>
   );
 }

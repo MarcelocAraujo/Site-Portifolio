@@ -18,7 +18,7 @@ export const PERFIL = {
   ficha: {
     local: 'Recife, PE',
     periodo: '5º de 8',
-    projetos: 5,
+    projetos: 8,
     status: 'disponível p/ estágio',
   },
 };
@@ -77,43 +77,259 @@ export const FORMACAO: ItemFormacao[] = [
   },
 ];
 
+export type LinkProjeto = {
+  rotulo: string;
+  url: string;
+  tipo: 'codigo' | 'site';
+};
+
 export type Projeto = {
-  /** Resultado de require() de uma imagem local. */
+  /** Capa do card. Resultado de require() de uma imagem local. */
   imagem: number;
   /** "cover" para fotos/capturas, "contain" para logos. */
   enquadramento: 'cover' | 'contain';
   categoria: string;
   titulo: string;
+  /** Texto curto do card. */
   descricao: string;
   stack: string[];
+  /** Conteúdo da janela de detalhes (abre ao clicar no card). */
+  detalhes: {
+    contexto: string;
+    sobre: string[];
+    destaques: string[];
+    equipe?: string;
+    galeria: { imagem: number; legenda: string }[];
+    links: LinkProjeto[];
+    /** Aviso exibido no lugar dos links (ex.: repositório privado). */
+    observacao?: string;
+  };
 };
 
 export const PROJETOS: Projeto[] = [
+  {
+    imagem: require('@/assets/images/projetos/sindhospe/capa.jpg'),
+    enquadramento: 'cover',
+    categoria: 'Full Stack · Projeto Integrador',
+    titulo: 'Portal SINDHOSPE',
+    descricao:
+      'Portal de inteligência de dados para os associados do SINDHOSPE, com indicadores hospitalares calculados a partir de dados reais do CNES/DATASUS.',
+    stack: ['Next.js', 'React', 'Tailwind CSS', 'Node.js', 'Express', 'PostgreSQL', 'Firebase'],
+    detalhes: {
+      contexto: 'Projeto Integrador · UNICAP + SINDHOSPE',
+      sobre: [
+        'Portal web feito em parceria com o SINDHOSPE. Cada estabelecimento associado entra com a própria conta e acompanha os seus indicadores de estrutura: leitos, serviços, habilitações, equipamentos e profissionais, sempre comparados com o município e com o estado.',
+        'Os números vêm de dados públicos e reais do CNES/DATASUS. Um importador no back-end cruza essas bases com a lista de associados do sindicato, calcula os indicadores e publica o resultado para o portal, que também traz relatório de evolução, visão do setor e um painel exclusivo para a equipe do sindicato.',
+        'Participei do desenho das telas do portal, dos wireframes ao protótipo navegável, junto com a equipe.',
+      ],
+      destaques: [
+        'Login por estabelecimento: cada associado só enxerga os próprios dados',
+        'Comparativos com município, estado e estabelecimentos do mesmo grupo',
+        'Relatório de evolução dos leitos e painel administrativo do sindicato',
+        'API REST em Node.js/Express sobre PostgreSQL e importador para o Firebase',
+        'Acessibilidade: ajuste do tamanho da fonte e modo de alto contraste',
+        'Cuidado com a LGPD: dos profissionais só saem contagens',
+      ],
+      equipe: 'Equipe de 5 alunos da UNICAP',
+      galeria: [
+        { imagem: require('@/assets/images/projetos/sindhospe/capa.jpg'), legenda: 'Tela de acesso dos associados' },
+        { imagem: require('@/assets/images/projetos/sindhospe/indicadores.jpg'), legenda: 'Painel de indicadores (protótipo com dados fictícios)' },
+        { imagem: require('@/assets/images/projetos/sindhospe/admin.jpg'), legenda: 'Área administrativa do sindicato (protótipo com dados fictícios)' },
+      ],
+      links: [
+        { rotulo: 'Ver site', url: 'https://sindhospe-frontend.vercel.app', tipo: 'site' },
+        { rotulo: 'Código do front-end', url: 'https://github.com/Heitormeira/sindhospe-frontend', tipo: 'codigo' },
+        { rotulo: 'Código do back-end', url: 'https://github.com/Heitormeira/sindhospe-backend', tipo: 'codigo' },
+      ],
+    },
+  },
+  {
+    imagem: require('@/assets/images/projetos/sangue/capa.jpg'),
+    enquadramento: 'cover',
+    categoria: 'Full Stack',
+    titulo: 'Sangue Solidário',
+    descricao:
+      'Site que conecta quem precisa de sangue a doadores compatíveis e hemocentros nas proximidades.',
+    stack: ['Next.js', 'React', 'Node.js', 'Back4App', 'APIs REST'],
+    detalhes: {
+      contexto: 'Programação Web e Mobile · UNICAP',
+      sobre: [
+        'Plataforma colaborativa de doação de sangue. Quem precisa escolhe o tipo sanguíneo do receptor e o site mostra os doadores compatíveis e disponíveis mais próximos, além dos hemocentros da região. Quem quer ajudar faz um cadastro simples e pode editá-lo depois.',
+        'O front-end e as rotas de API rodam juntos no Next.js. Os cadastros ficam no Back4App (Parse Server), o endereço é preenchido pelo CEP com o ViaCEP e a localização dos hemocentros vem das APIs do OpenStreetMap.',
+      ],
+      destaques: [
+        'Busca de doadores pela tabela de compatibilidade sanguínea',
+        'Doadores e hemocentros ordenados pela distância',
+        'CRUD completo, com área do doador e acesso de administrador',
+        'Preenchimento automático do endereço pelo CEP',
+        'A lista pública não expõe os contatos dos doadores',
+        'Acessibilidade: tamanho da letra ajustável e alto contraste',
+      ],
+      equipe: 'Projeto em equipe de 3 alunos',
+      galeria: [
+        { imagem: require('@/assets/images/projetos/sangue/capa.jpg'), legenda: 'Página inicial' },
+        { imagem: require('@/assets/images/projetos/sangue/buscar.jpg'), legenda: 'Busca de doadores compatíveis' },
+        { imagem: require('@/assets/images/projetos/sangue/cadastro.jpg'), legenda: 'Cadastro de doador' },
+        { imagem: require('@/assets/images/projetos/sangue/doadores.jpg'), legenda: 'Lista de doadores com filtros' },
+      ],
+      links: [
+        { rotulo: 'Ver site', url: 'https://projetowebmobile1gq.vercel.app', tipo: 'site' },
+        { rotulo: 'Código', url: 'https://github.com/Heitormeira/projetowebmobile1gq', tipo: 'codigo' },
+      ],
+    },
+  },
+  {
+    imagem: require('@/assets/images/projetos/liga/capa.jpg'),
+    enquadramento: 'cover',
+    categoria: 'Full Stack',
+    titulo: 'Site de Eventos para Liga Acadêmica',
+    descricao:
+      'Site institucional com agenda de eventos, inscrições online, pagamento por Pix ou cartão e painel administrativo.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Mercado Pago'],
+    detalhes: {
+      contexto: 'Projeto real para uma liga acadêmica',
+      sobre: [
+        'Site oficial de uma liga acadêmica, com páginas institucionais, agenda de eventos e todo o fluxo de inscrição: o participante preenche os dados, paga por Pix ou cartão e recebe o ingresso com QR Code por e-mail.',
+        'A organização administra tudo por um painel próprio: cria e edita eventos, acompanha os inscritos, exporta a lista em CSV e faz o check-in no dia do evento.',
+        'O controle de vagas acontece dentro do banco de dados, então inscrições simultâneas nunca ultrapassam o limite. O preço sempre vem do servidor, e cada pagamento só é confirmado depois de validado com o Mercado Pago.',
+      ],
+      destaques: [
+        'Inscrições com reserva de vaga por 30 minutos, sem overbooking',
+        'Pagamentos via Mercado Pago (Pix e cartão) com webhooks verificados',
+        'Ingresso com QR Code e e-mail de confirmação',
+        'Painel administrativo: eventos, participantes, exportação CSV e check-in',
+        'Banco com regras de segurança por linha (RLS) no Supabase',
+        'Testes automatizados de ponta a ponta e foco em LGPD e acessibilidade',
+      ],
+      galeria: [
+        { imagem: require('@/assets/images/projetos/liga/capa.jpg'), legenda: 'Página do evento com o formulário de inscrição' },
+        { imagem: require('@/assets/images/projetos/liga/eventos.jpg'), legenda: 'Agenda de eventos' },
+      ],
+      links: [],
+      observacao: 'Repositório privado.',
+    },
+  },
+  {
+    imagem: require('@/assets/images/projetos/controle/capa.jpg'),
+    enquadramento: 'cover',
+    categoria: 'Robótica · Acessibilidade',
+    titulo: 'Controle de Acesso Inclusivo',
+    descricao:
+      'Sistema com RFID e Arduino que destrava a porta de acessibilidade da universidade sem depender de terceiros.',
+    stack: ['Arduino', 'C++', 'RFID', 'Impressão 3D'],
+    detalhes: {
+      contexto: 'Robótica Inclusiva · UNICAP',
+      sobre: [
+        'Na universidade, estudantes cadeirantes dependiam de alguém para abrir a porta de acessibilidade. O projeto devolve essa autonomia: basta aproximar um cartão autorizado do leitor e a trava se abre sozinha.',
+        'Um Arduino Uno lê o cartão pelo módulo RFID RC522 e aciona um servo motor, que move uma trava de cremalheira e pinhão impressa em 3D. A estrutura é de MDF cortado a laser. Os cartões são cadastrados e removidos no próprio aparelho com um Cartão Mestre, e tudo funciona 100% offline.',
+      ],
+      destaques: [
+        'Firmware em C++ organizado como máquina de estados (normal, admin e remoção)',
+        'Cadastro de até 10 cartões salvos na EEPROM, que resistem a quedas de energia',
+        'Mesma leitura abre ou fecha a porta (modo alternância)',
+        'Mecanismo de cremalheira e pinhão impresso em 3D, com arquivos STL abertos',
+        'Custo estimado entre R$ 150 e R$ 300',
+      ],
+      equipe: 'Projeto em equipe de 4 alunos',
+      galeria: [
+        { imagem: require('@/assets/images/projetos/controle/capa.jpg'), legenda: 'Protótipo em funcionamento' },
+        { imagem: require('@/assets/images/projetos/controle/prototipo.jpg'), legenda: 'Leitor RFID e trava impressa em 3D' },
+        { imagem: require('@/assets/images/projetos/controle/montagem.jpg'), legenda: 'Primeira montagem em MDF cortado a laser' },
+        { imagem: require('@/assets/images/projetos/controle/teste-rfid.jpg'), legenda: 'Primeiros testes com o módulo RC522' },
+      ],
+      links: [
+        { rotulo: 'Código e documentação', url: 'https://github.com/MarcelocAraujo/Controle-de-Acesso-Inclusivo---UNICAP', tipo: 'codigo' },
+      ],
+    },
+  },
   {
     imagem: require('@/assets/images/projetos/ocupacional-3d.png'),
     enquadramento: 'cover',
     categoria: 'Web',
     titulo: 'Site Ocupacional 3D',
     descricao:
-      'Plataforma web criada para a Ocupacional 3D (empresa), na cadeira de Computação, Sociedade e Sustentabilidade.',
-    stack: ['Wix', 'Web Design'],
+      'Loja virtual e site institucional da Ocupacional 3D, empresa de tecnologia assistiva com impressão 3D.',
+    stack: ['Wix', 'Web Design', 'E-commerce'],
+    detalhes: {
+      contexto: 'Computação, Sociedade e Sustentabilidade · UNICAP',
+      sobre: [
+        'Site criado para a Ocupacional 3D, empresa de Recife que desenvolve produtos e recursos impressos em 3D para facilitar a vida de pessoas com deficiência.',
+        'O site reúne a loja virtual, com produtos organizados por categoria (atividades de vida diária, reabilitação, educação, recursos lúdicos e kits), as páginas institucionais (sobre, quem somos e serviços), as perguntas frequentes e os canais de contato.',
+      ],
+      destaques: [
+        'Loja com filtros por categoria e preço, carrinho e vários meios de pagamento',
+        'Páginas institucionais apresentando a empresa, a equipe e os serviços',
+        'FAQ com busca e atendimento direto pelo WhatsApp',
+        'Cadastro de e-mail para novidades',
+        'Projeto com impacto social, ligado à acessibilidade',
+      ],
+      galeria: [
+        { imagem: require('@/assets/images/projetos/ocupacional-3d.png'), legenda: 'Loja virtual' },
+        { imagem: require('@/assets/images/projetos/ocupacional/inicio.jpg'), legenda: 'Página inicial e seção "Sobre"' },
+        { imagem: require('@/assets/images/projetos/ocupacional/faq.jpg'), legenda: 'Perguntas frequentes' },
+      ],
+      links: [{ rotulo: 'Ver site', url: 'https://www.ocupacional3d.com', tipo: 'site' }],
+    },
   },
   {
     imagem: require('@/assets/images/projetos/banco-de-dados.png'),
     enquadramento: 'cover',
     categoria: 'Banco de Dados',
     titulo: 'Concessionária de Carros',
-    descricao: 'Criação de um banco de dados para a cadeira de Projeto de Banco de Dados.',
+    descricao:
+      'Banco de dados relacional completo para uma concessionária, da modelagem às consultas analíticas.',
     stack: ['SQL', 'MySQL', 'Modelagem Relacional'],
+    detalhes: {
+      contexto: 'Projeto de Banco de Dados · UNICAP',
+      sobre: [
+        'Modelagem e implementação de um banco de dados para gerenciar uma concessionária de veículos: veículos, clientes, vendas, funcionários, financiamentos e revisões.',
+        'O esquema foi normalizado para evitar anomalias de inserção, alteração e exclusão. O projeto vai da criação das tabelas, com as regras de integridade, até consultas avançadas que geram relatórios de negócio.',
+      ],
+      destaques: [
+        'DDL com chaves primárias e estrangeiras, CHECK e UNIQUE (CPF, chassi, contatos)',
+        'Script DML com massa de dados consistente para testes',
+        'Consultas com múltiplos JOINs, GROUP BY e HAVING',
+        'Subconsultas escalares e correlacionadas, incluindo NOT EXISTS',
+        'Modelo relacional normalizado e documentado',
+      ],
+      equipe: 'Projeto em equipe de 3 alunos',
+      galeria: [
+        { imagem: require('@/assets/images/projetos/banco-de-dados.png'), legenda: 'Banco de dados relacional' },
+        { imagem: require('@/assets/images/projetos/concessionaria/modelo-relacional.jpg'), legenda: 'Modelo relacional do sistema' },
+      ],
+      links: [
+        { rotulo: 'Código', url: 'https://github.com/MarcelocAraujo/projeto-concessionaria-banco-de-dados', tipo: 'codigo' },
+      ],
+    },
   },
   {
-    imagem: require('@/assets/images/projetos/java-logo.png'),
-    enquadramento: 'contain',
+    imagem: require('@/assets/images/projetos/socios/capa.jpg'),
+    enquadramento: 'cover',
     categoria: 'Orientação a Objetos',
     titulo: 'Cadastro de Sócios',
     descricao:
-      'Construção de um sistema de cadastro de sócios para a cadeira de Programação Orientada a Objetos.',
-    stack: ['JAVA', 'POO'],
+      'Sistema em Java para gerenciar os sócios e as categorias do Clube Náutico Capibaribe.',
+    stack: ['Java', 'POO', 'Threads', 'Serialização'],
+    detalhes: {
+      contexto: 'Programação Orientada a Objetos · UNICAP',
+      sobre: [
+        'Sistema de gestão de sócios do Clube Náutico Capibaribe, executado no terminal. O administrador cadastra, edita, exclui e lista sócios e gerencia as categorias oficiais do clube. O sócio entra pelo CPF para ver os seus dados, atualizar informações e consultar os benefícios da categoria.',
+        'O projeto aplica na prática os pilares da orientação a objetos, com persistência dos dados em arquivo e salvamento automático em segundo plano.',
+      ],
+      destaques: [
+        'Herança, abstração, polimorfismo e encapsulamento',
+        'Padrão Singleton no serviço central do sistema',
+        'Thread daemon que salva os dados periodicamente',
+        'Persistência por serialização em arquivos .dat',
+        'Exceções personalizadas e validação de CPF',
+      ],
+      equipe: 'Projeto em equipe de 4 alunos',
+      galeria: [
+        { imagem: require('@/assets/images/projetos/socios/capa.jpg'), legenda: 'Menu principal e menu do administrador' },
+        { imagem: require('@/assets/images/projetos/socios/categorias.jpg'), legenda: 'Categorias oficiais do clube' },
+      ],
+      links: [{ rotulo: 'Código', url: 'https://github.com/joaodafontequeiroz/gestao-socios-cnc', tipo: 'codigo' }],
+    },
   },
   {
     imagem: require('@/assets/images/projetos/carrinho.jpeg'),
@@ -122,15 +338,22 @@ export const PROJETOS: Projeto[] = [
     titulo: 'Robótica',
     descricao: 'Protótipo de robô móvel desenvolvido com Arduino UNO para a cadeira de Robótica.',
     stack: ['Arduino', 'C++', 'Hardware'],
-  },
-  {
-    imagem: require('@/assets/images/projetos/excel-logo.png'),
-    enquadramento: 'contain',
-    categoria: 'Lógica',
-    titulo: 'Tabela Verdade',
-    descricao:
-      'Simulador de Tabela Verdade desenvolvido para a cadeira de Lógica Matemática Aplicada à Computação.',
-    stack: ['Excel', 'Lógica'],
+    detalhes: {
+      contexto: 'Robótica · UNICAP',
+      sobre: [
+        'Protótipo de robô móvel de duas rodas montado do zero e programado em C++ para o Arduino UNO.',
+        'O chassi é uma placa de MDF cortada a laser. Nela ficam o Arduino, a ponte H que controla os motores e, na frente, um sensor ultrassônico preso em um suporte impresso em 3D, que mede a distância até os obstáculos.',
+      ],
+      destaques: [
+        'Chassi em MDF cortado a laser',
+        'Arduino UNO como controlador',
+        'Ponte H L298N acionando dois motores DC com rodas',
+        'Sensor ultrassônico HC-SR04 em suporte impresso em 3D',
+        'Ligações com jumpers e alimentação externa',
+      ],
+      galeria: [{ imagem: require('@/assets/images/projetos/carrinho.jpeg'), legenda: 'Robô montado' }],
+      links: [],
+    },
   },
 ];
 
