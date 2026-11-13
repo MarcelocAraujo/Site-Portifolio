@@ -333,7 +333,7 @@ export const PROJETOS: Projeto[] = [
   },
   {
     imagem: require('@/assets/images/projetos/carrinho.jpeg'),
-    enquadramento: 'cover',
+    enquadramento: 'contain',
     categoria: 'Hardware',
     titulo: 'Robótica',
     descricao: 'Protótipo de robô móvel desenvolvido com Arduino UNO para a cadeira de Robótica.',

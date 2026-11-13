@@ -287,7 +287,8 @@ const projetoStyles = (c: Palette) =>
     },
     cardHover: { borderColor: c.accentBorder, transform: [{ translateY: -4 }] },
     imagemBox: { aspectRatio: 16 / 10, width: '100%', backgroundColor: c.surfaceAlt },
-    imagemLogo: { backgroundColor: '#f4f4f5', padding: 28 },
+    // Foto inteira, sem corte, centralizada sobre fundo neutro
+    imagemLogo: { backgroundColor: '#f1ece8' },
     corpo: { padding: 24, gap: 10, flexGrow: 1 },
     categoria: { fontFamily: fonts.regular, fontSize: 14, color: c.accent },
     titulo: { fontFamily: fonts.semibold, fontSize: 24, lineHeight: 32, color: c.text },
