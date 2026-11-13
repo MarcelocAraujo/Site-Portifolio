@@ -30,6 +30,16 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
       .catch(() => {});
   }, []);
 
+  // Na web, pinta o fundo da página e as barras do navegador com a cor do tema.
+  useEffect(() => {
+    if (process.env.EXPO_OS !== 'web') return;
+    const cor = palettes[scheme].bg;
+    document.documentElement.style.backgroundColor = cor;
+    document.body.style.backgroundColor = cor;
+    document.documentElement.style.colorScheme = scheme;
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', cor));
+  }, [scheme]);
+
   const value = useMemo<ThemeValue>(
     () => ({
       scheme,
