@@ -308,6 +308,34 @@ const projetoStyles = (c: Palette) =>
   });
 
 const GAP_PROJETOS = 24;
+/** Quantos projetos aparecem antes do botão "Ver mais projetos". */
+const PROJETOS_INICIAIS = 6;
+
+function BotaoVerMais({ aberto, onPress }: { aberto: boolean; onPress: () => void }) {
+  const { colors } = useAppTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      style={({ hovered, pressed }: { hovered?: boolean; pressed: boolean }) => ({
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: hovered ? colors.accentBorder : colors.border,
+        backgroundColor: hovered ? colors.accentSoft : 'transparent',
+        opacity: pressed ? 0.8 : 1,
+      })}>
+      <Text style={{ fontFamily: fonts.medium, fontSize: 14, color: colors.text }}>
+        {aberto ? 'Ocultar projetos' : 'Ver mais projetos'}
+      </Text>
+      <Ionicons name={aberto ? 'chevron-up' : 'chevron-down'} size={15} color={colors.text} />
+    </Pressable>
+  );
+}
 
 export function ProjetosSection({ borda = true }: { borda?: boolean }) {
   const { width } = useWindowDimensions();
@@ -324,6 +352,8 @@ export function ProjetosSection({ borda = true }: { borda?: boolean }) {
           ? (larguraGrade - GAP_PROJETOS * (colunas - 1)) / colunas
           : undefined;
   const [aberto, setAberto] = useState<Projeto | null>(null);
+  const [mostrarTodos, setMostrarTodos] = useState(false);
+  const visiveis = mostrarTodos ? PROJETOS : PROJETOS.slice(0, PROJETOS_INICIAIS);
 
   return (
     <Section borda={borda}>
@@ -333,7 +363,7 @@ export function ProjetosSection({ borda = true }: { borda?: boolean }) {
       <View
         onLayout={(e) => setLarguraGrade(e.nativeEvent.layout.width)}
         style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GAP_PROJETOS, marginTop: 48 }}>
-        {PROJETOS.map((projeto, i) => (
+        {visiveis.map((projeto, i) => (
           <Reveal
             key={projeto.titulo}
             delay={(i % colunas) * 120}
@@ -342,6 +372,11 @@ export function ProjetosSection({ borda = true }: { borda?: boolean }) {
           </Reveal>
         ))}
       </View>
+      {PROJETOS.length > PROJETOS_INICIAIS ? (
+        <View style={{ alignItems: 'center', marginTop: 36 }}>
+          <BotaoVerMais aberto={mostrarTodos} onPress={() => setMostrarTodos((v) => !v)} />
+        </View>
+      ) : null}
       <ProjetoModal projeto={aberto} onFechar={() => setAberto(null)} />
     </Section>
   );

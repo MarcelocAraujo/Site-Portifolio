@@ -205,8 +205,8 @@ export const PROJETOS: Projeto[] = [
         { imagem: require('@/assets/images/projetos/liga/capa.jpg'), legenda: 'Página do evento com o formulário de inscrição' },
         { imagem: require('@/assets/images/projetos/liga/eventos.jpg'), legenda: 'Agenda de eventos' },
       ],
-      links: [],
-      observacao: 'Repositório privado.',
+      links: [{ rotulo: 'Ver site', url: 'https://laep-site.vercel.app', tipo: 'site' }],
+      observacao: 'Código em repositório privado.',
     },
   },
   {
