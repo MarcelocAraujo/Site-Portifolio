@@ -6,11 +6,12 @@ App de currículo/portfólio feito em **React Native + Expo** com **Expo Router*
 
 | Rota | Tela | Conteúdo |
 | --- | --- | --- |
-| `/` | Início | Apresentação, ficha rápida, GitHub, LinkedIn e currículo |
-| `/projetos` | Projetos | Galeria com os projetos acadêmicos |
+| `/` | Início | Página única com todas as seções (aparecem ao rolar): apresentação, projetos, formação/experiência, stacks e forca |
+| `/projetos` | Projetos | Galeria de projetos; cada card abre uma janela com fotos, descrição e links |
 | `/formacao` | Formação | Experiência acadêmica: graduação, escola e cursos |
 | `/experiencia` | Experiência | Experiência profissional: objetivo, áreas de interesse e idiomas |
-| `/stacks` | Stacks | Habilidades técnicas e **Sobre este app** (todas as tecnologias e módulos usados) |
+| `/stacks` | Stacks | Habilidades técnicas |
+| `/sobre` | Sobre | **Sobre este app**: todas as tecnologias e módulos usados (link no rodapé) |
 | `/forca` | Forca | Jogo da Forca rodando em React Native (sem WebView) |
 
 ## Tecnologias
@@ -29,10 +30,13 @@ App de currículo/portfólio feito em **React Native + Expo** com **Expo Router*
 src/
   app/                 # telas (cada arquivo é uma rota)
     _layout.tsx        # fontes, tema e navegação
-    index.tsx  projetos.tsx  formacao.tsx  experiencia.tsx  stacks.tsx  forca.tsx
+    index.tsx  projetos.tsx  formacao.tsx  experiencia.tsx  stacks.tsx  forca.tsx  sobre.tsx
   components/
     ui.tsx             # textos, botões, cards, chips, títulos com cursor "_"
     layout.tsx         # barra de navegação, tela com rolagem, redes sociais, rodapé
+    sections.tsx       # seções do portfólio (hero, projetos, formação, stacks, forca, sobre)
+    projeto-modal.tsx  # janela de detalhes do projeto (galeria, descrição, links)
+    reveal.tsx         # animação de aparecer ao rolar
     forca/boneco.tsx   # boneco da forca em SVG
   data/perfil.ts       # TODO o conteúdo (textos, projetos, cursos, stacks, palavras)
   theme/               # cores, fontes, espaçamentos e tema claro/escuro
